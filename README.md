@@ -25,8 +25,10 @@ This compose will give you:
 - Check container logs: `docker logs -f geth`
 - Go in the geth container: `docker exec -it geth sh`
 - List account: `geth --datadir=/root/.ethereum/devchain account list`
-- Backup the account somewhere safe (the output of this cmd): `cat /root/.ethereum/devchain/keystore/*`
-{"address":"6e068b2fcf3ed73d5166d0b322fa10e784b7b4fe","crypto":{"cipher":"aes-128-ctr","ciphertext":"0d392da6deb66b13c95d1b723ea51a53ab58e1f7555c3a1263a5b203885b9e51","cipherparams":{"iv":"7a919e171cda132f375afd5f9e7c2ba1"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"1f3f814262b9a4ce3c2f3e1cabb5788f0520101f00598aa0b84bbda08ceaaf31"},"mac":"8e8393e86fe2278666ec26e9956b49adc25bc2e7492d5a25ee30e8118dd17441"},"id":"71aa2bfd-ee91-4206-ab5e-82c38ccd071f","version":3}/ `
+- Backup the account somewhere safe:
+  - Run this command: `cat /root/.ethereum/devchain/keystore/*`
+  - And save the output. For example, I saved this block for my wallet (carefull, you can steal my coins with these info):
+`{"address":"6e068b2fcf3ed73d5166d0b322fa10e784b7b4fe","crypto":{"cipher":"aes-128-ctr","ciphertext":"0d392da6deb66b13c95d1b723ea51a53ab58e1f7555c3a1263a5b203885b9e51","cipherparams":{"iv":"7a919e171cda132f375afd5f9e7c2ba1"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"1f3f814262b9a4ce3c2f3e1cabb5788f0520101f00598aa0b84bbda08ceaaf31"},"mac":"8e8393e86fe2278666ec26e9956b49adc25bc2e7492d5a25ee30e8118dd17441"},"id":"71aa2bfd-ee91-4206-ab5e-82c38ccd071f","version":3}/`
 - The account is on your vm too: `sudo ls /var/lib/docker/volumes/devchain_geth/_data/devchain`. From here you can save or import another account
 
 If needed, create new account with:
@@ -34,7 +36,6 @@ If needed, create new account with:
 - create account: `geth --datadir=/root/.ethereum/devchain account new --password /root/.ethereum/devchain/pw2`
 
 - Don't want to mine? In `docker-compose.yml` section `geth/command` remove `--fast --mine` and run again `docker-compose up -d`
-
 - Check that you are well connected to our netstat dashboard: http://factory.shinit.net:15000
 - Use python to check your node, and later send ether: `python3 checkWeb3.py`
 
