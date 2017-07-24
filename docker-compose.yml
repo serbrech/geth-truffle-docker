@@ -5,7 +5,7 @@ services:
   geth:
     container_name: geth
     build: geth
-    command: '--identity "gregbk" --networkid 2017042099 --datadir "/root/.ethereum/devchain" --unlock 0 --password /root/.ethereum/devchain/pw --port "30303" --rpc --rpcport "8540" --rpccorsdomain "*" --rpcaddr="0.0.0.0" --rpcapi "admin,db,eth,miner,net,web3,personal,txpool" --nodiscover --minerthreads=2  --etherbase 0 --fast --mine'
+    command: '--identity "gregbk2" --networkid 2017042099 --datadir "/root/.ethereum/devchain" --unlock 0 --password /root/.ethereum/devchain/pw --port "30303" --rpc --rpcport "8540" --rpccorsdomain "*" --rpcaddr="0.0.0.0" --rpcapi "admin,db,eth,miner,net,web3,personal,txpool" --nodiscover --minerthreads=2  --etherbase 0 --fast --mine'
     ports:    
       - "8540:8540"
       - "30303:30303"
@@ -35,7 +35,7 @@ services:
       - WS_SECRET=20170420devchain
       - RPC_HOST=geth
       - RPC_PORT=8540
-      - INSTANCE_NAME=gregbk_node
+      - INSTANCE_NAME=gregbk2_node
       - CONTACT_DETAILS=
       - NODE_ENV=private
       - LISTENING_PORT=30303
