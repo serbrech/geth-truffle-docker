@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+
+  geth:
+    container_name: geth
+    build: geth
+    command: '--identity "gregbk" --networkid 2017042099 --datadir "/root/.ethereum/devchain" --unlock 0 --password /root/.ethereum/devchain/pw --port "30303" --rpc --rpcport "8540" --rpccorsdomain "*" --rpcaddr="0.0.0.0" --rpcapi "admin,db,eth,miner,net,web3,personal,txpool" --nodiscover --minerthreads=2  --etherbase 0 --fast --mine'
+    ports:    
+      - "8540:8540"
+      - "30303:30303"
+      - "30303:30303/udp"
+    volumes: # blochain, wallet will be store here on your host/vm
+      - geth:/root/.ethereum
+
+  truffle:
+    container_name: truffle
+    build: truffle
+    volumes:
+      - ./dapp:/dapp
+    entrypoint: sh
+    command: '-c "sleep 1d"'
+
+  testrpc:
+    container_name: testrpc
+    image: desmart/testrpc:latest
+    ports:
+      - 8545:8545
+
+  netstatsapi: # to send geth data to remote dashboard
+    container_name: netstatsapi
+    image: enettet/ethereum-netstats-api
+    environment:
+      - WS_SERVER=ws://factory.shinit.net:15000
+      - WS_SECRET=20170420devchain
+      - RPC_HOST=geth
+      - RPC_PORT=8540
+      - INSTANCE_NAME=gregbk_node
+      - CONTACT_DETAILS=
+      - NODE_ENV=private
+      - LISTENING_PORT=30303
+      - VERBOSITY=3
+
+  #netstatsfront: # To display our dashboard locally
+    container_name: netstatsfront
+    #build: netstats-front
+    #environment:
+      #- WS_SECRET=20170420devchain
+      #- NODE_ENV=private
+    #image: canchain/docker-eth-netstats
+    #ports:
+      #- 3000:3000 
+    #entrypoint: sh
+    #command: '-c "sleep 1d"'
+
+volumes:
+  geth:

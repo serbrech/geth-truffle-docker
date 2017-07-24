@@ -1,0 +1,22 @@
+# Copyright 2017 - Dechain User Group
+#Truffle Docker Image
+FROM node:8.0.0-alpine
+LABEL name=truffle
+
+RUN apk add --update bash zsh vim emacs-nox less \
+        nodejs git openssl \
+        python python-dev g++ make
+
+USER node
+RUN mkdir /home/node/npm-global
+RUN npm config set prefix /home/node/npm-global
+
+RUN npm install -g truffle
+
+ENV PATH="/home/node/npm-global/bin:${PATH}"
+
+WORKDIR /home/node
+RUN ln -s /projects /home/node/projects
+
+EXPOSE 8080
+ENTRYPOINT []
