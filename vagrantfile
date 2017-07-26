@@ -1,0 +1,38 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get install -y net-tools nmap
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.hostname = "devchain-vm"
+  config.vm.network :private_network, ip: "192.168.3.3"
+  config.vm.synced_folder ".", "/vagrant"
+
+  config.vm.provider :virtualbox do |v|
+    #v.name = "devchain-vm"
+    v.memory = 2048
+    v.cpus = 1
+  end
+
+  # Install docker
+  config.vm.provision :docker
+
+  #Install docker-compose
+  config.vm.provision "shell", inline: <<-EOC
+    test -e /usr/local/bin/docker-compose || \\
+    curl -sSL https://github.com/docker/compose/releases/download/1.14.0/docker-compose-`uname -s`-`uname -m` \\
+      | sudo tee /usr/local/bin/docker-compose > /dev/null
+    sudo chmod +x /usr/local/bin/docker-compose
+    test -e /etc/bash_completion.d/docker-compose || \\
+    curl -sSL https://raw.githubusercontent.com/docker/compose/$(docker-compose --version | awk 'NR==1{print $NF}')/contrib/completion/bash/docker-compose \\
+      | sudo tee /etc/bash_completion.d/docker-compose > /dev/null
+  EOC
+
+  config.vm.provision "shell", inline: $script
+
+end

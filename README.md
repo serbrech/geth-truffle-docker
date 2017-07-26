@@ -40,14 +40,14 @@ If needed, create new account with:
 - Use python to check your node, and later send ether: `python3 checkWeb3.py`
 
 ## Truffle
-- Go in truffle container:  docker exec -it truffle sh
+- Go in truffle container:  `docker exec -it truffle sh`
 - try truffle:
 ```
 cd /usr/src/app
 truffle init
 vi truffle.js
-host:"testrpc"
-port: 8545
+  host:"testrpc" <-- edit this line
+  port: 8545     <-- edit this line
 
 truffle test
 ```
