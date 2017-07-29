@@ -11,7 +11,7 @@ This compose will give you:
 
 ## Prerequisit
 - A linux VM, preferable ubuntu 14.x or 16.x
-- Docker v17 and docker-compose v1.13
+- [Docker](#docker) v17 and [docker-compose](#docker-compose) v1.13 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 
 ## Run containers
@@ -57,3 +57,25 @@ Now test our helloWord dapp
 - Navigate to the folder: `cd /dapp/helloWorld`
 - Test the contract against the testrpc mode: `truffle test --testrpc`
 - Test against our devchain node: `truffle test --devchain`
+
+## Install guide
+### Docker
+```
+wget https://get.docker.com/ -O script.sh
+chmod +x script.sh
+sudo ./script.sh
+```
+check docker version `sudo docker version`
+
+[Back to Prerequisit](#prerequisit)
+
+### docker-compose
+Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
+```
+sudo -i
+curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+exit
+```
+check docker-compose version `docker-compose version`
+[Back to Prerequisit](#prerequisit)
