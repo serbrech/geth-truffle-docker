@@ -1,4 +1,9 @@
+# Setup your Ethereum environment with docker-compose and deploy your first smart contract with truffle #
+
+![devchain-infra.png](https://github.com/gregbkr/geth-truffle-docker/raw/master/media/devchain-infra.png)
+
 ## Description
+
 This compose will give you in on command line:
 - **ethereum go-client** (geth) running on port 8544 with
   - A default account, already unlocked
@@ -45,6 +50,14 @@ This compose will give you in on command line:
   - Want to send ether? Edit `remote`, `amountInEther` and comment `exit()`, and run the same script
 
 ## Truffle
+Truffle will compile, test, deploy your smart contract.
+In `/dapp` folder, there are few exemples of easy smart contract:
+- **MetaCoin**: default truffle contract you get when typing `truffle init`. It is a basic coin and you can `getBalance()` or `sendCoin()` token
+- **HelloWorld**: Just one function, display a single message when calling the function `greeter()`
+- **counter**: From 0, increment the counter each time you run `increment()`
+
+Each project has test functions (doing the same tests), in solidity `./test/*.sol` or in javascript `./test/*.js` 
+
 Go in truffle container:  `sudo docker exec -it truffle sh`
 
 Try truffle with **metaCoin**:

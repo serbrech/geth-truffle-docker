@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.11;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
@@ -6,23 +6,17 @@ import "../contracts/Counter.sol";
 
 contract TestCounter {
 
-  
-
-
-  function testInitialBalanceUsingDeployedContract() {
-    MetaCoin meta = MetaCoin(DeployedAddresses.MetaCoin());
-
-    uint expected = 10000;
-
-    Assert.equal(meta.getBalance(tx.origin), expected, "Owner should have 10000 MetaCoin initially");
+  function testDefaultValue() {
+    Counter count = Counter(DeployedAddresses.Counter());
+    uint expected = 0;
+    Assert.equal(count.getCount(), expected, "Default counter should be 0");
   }
 
-  function testInitialBalanceWithNewMetaCoin() {
-    MetaCoin meta = new MetaCoin();
-
-    uint expected = 10000;
-
-    Assert.equal(meta.getBalance(tx.origin), expected, "Owner should have 10000 MetaCoin initially");
+  function testOneIncrement() {
+    Counter count = Counter(DeployedAddresses.Counter());
+    count.increment();
+    uint expected = 1;
+    Assert.equal(count.getCount(), expected, "One increment from 0 should be 1");
   }
 
 }

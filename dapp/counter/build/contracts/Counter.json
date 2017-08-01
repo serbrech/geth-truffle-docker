@@ -1,0 +1,37 @@
+{
+  "contract_name": "Counter",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "increment",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x606060405260006000553415601057fe5b5b60978061001f6000396000f300606060405263ffffffff60e060020a600035041663a87d942c8114602a578063d09de08a146049575bfe5b3415603157fe5b60376058565b60408051918252519081900360200190f35b3415605057fe5b6056605f565b005b6000545b90565b6000805460010190555b5600a165627a7a723058203a02e514b160375ba07f5ba66794cb01e810ee4306e1d74bdaa86879e1e191ed0029",
+  "networks": {
+    "1501583836464": {
+      "events": {},
+      "links": {},
+      "address": "0xcbceeb00bf03bfaacd8243ca9c2d96ce93c5f23c",
+      "updated_at": 1501608636387
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1501608636387
+}

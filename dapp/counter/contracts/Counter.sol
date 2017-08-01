@@ -1,7 +1,8 @@
 pragma solidity ^0.4.11;
 
-contract Counter {
+import "./Mortal.sol";
 
+contract Counter {
     /* define variable count of the type uint */
     uint count = 0;
 
