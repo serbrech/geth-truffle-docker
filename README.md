@@ -46,12 +46,13 @@ This compose will give you in on command line:
 
 ## Truffle
 Go in truffle container:  `sudo docker exec -it truffle sh`
+
 Try truffle with **metaCoin**:
 - Go to metaCoin project: `cd /dapps/metaCoin`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
 - Test the contract against testrpc node: `truffle test --network testrpc`
 - Test against our devchain network: `truffle test --network devchain`
-- --> if warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
+- If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
 
 Now **test our helloWorld** dapp
 - Customize the output of the helloWorld: `migrations/2_deploy_contracts.js`, edit: `I am Groot!`
@@ -74,12 +75,12 @@ Now **test our helloWorld** dapp
 **Share you contract with others**: for that you will need:
 - The **contract address**: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - The **abi**: a description of the functions of our contract 
-  - From our VM: install jq: `àpt-get install jq`
+  - From our VM: install jq: `sudo apt-get install jq`
   - And display the abi: `cat dapp/helloWorld/build/contracts/Greeter.json | jq -c '.abi'`
   - Result: `[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
   - Go to a truffle's friend pc, and interact with your contract:
-  - Create the abi: `my_abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
-  - You can now run your contract function`to see your custom message: `web3.eth.contract(my_abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
+  - Create the abi: `abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
+  - You can now run your contract function to see your custom message: `web3.eth.contract(abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
 
 **New contract** from template:
 - Launch a new contract (a clone) from the template Greeter: `var greeter2 = Greeter.new("Hello gva")`
