@@ -10,7 +10,7 @@ This compose will give you in on command line:
 - **Netstats**: which will collect and send your node perf to our devchain dashboard on http://factory.shinit.net:15000
 
 ## Prerequisit
-- A linux VM, preferable ubuntu 14.x or 16.x
+- A linux VM, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [Vagrant](#vagrant) --> see in annexes 
 - [Docker](#docker) v17 and [docker-compose](#docker-compose) v1.15 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 
@@ -60,14 +60,27 @@ Now test our helloWord dapp
 
 ## Annexes
 
+### Vagrant
+- Install the latest version of [vagrant](https://www.vagrantup.com/downloads.html) and [virtualbox](https://www.virtualbox.org/wiki/Downloads)
+- Clone our repo and go at the root
+- Create vagrant vm: `vagrant up`, and wait the vm to build
+- Access the vm: `vagrant ssh`
+--> You are now in an ubuntu vm, you can continue the tuto!
+
+
 ### Docker
+
+Install docker:
 ```
 wget https://get.docker.com/ -O script.sh
 chmod +x script.sh
 sudo ./script.sh
 ```
-check docker version `sudo docker version`
+check docker version: `sudo docker version`
 
+Docker commands:
+- List docker image: `sudo docker image list`
+- List docker container: `sudo docker container list`
 [Back to Prerequisit](#prerequisit)
 
 ### docker-compose
