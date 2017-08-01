@@ -1,4 +1,4 @@
-# Setup your Ethereum environment with docker-compose and deploy your first smart contract with truffle #
+# Ethereum environment with docker-compose + smart contract with truffle #
 
 ![devchain-infra.png](https://github.com/gregbkr/geth-truffle-docker/raw/master/media/devchain-infra.png)
 
@@ -14,19 +14,19 @@ This compose will give you in on command line:
 - **Truffle**: where you can test and deploy smart contracts
 - **Netstats**: which will collect and send your node perf to our devchain dashboard on http://factory.shinit.net:15000
 
-## Prerequisit
+## 0. Prerequisit
 - A linux VM, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [Vagrant](#vagrant) --> see in annexes 
 - [Docker](#docker) v17 and [docker-compose](#docker-compose) v1.15 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 
-## Run containers
+## 1. Run containers
 
 - Check your username: `echo $USER` <-- we will use this variable to name your geth node (if you don't have it, create it as persistent)
 - Run the stack: `sudo docker-compose up -d`
 - Check geth is up and answering locally: `curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' localhost:8544`
 - Check testrpc node is running: `curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' localhost:8545`
 
-## Geth
+## 2. Geth
 - Check container logs: `sudo docker logs -f geth`
 - Start shell in the geth container: `sudo docker exec -it geth sh` 
 - Interact with geth:
@@ -49,35 +49,38 @@ This compose will give you in on command line:
   - Check your node: `python3 checkWeb3.py`
   - Want to send ether? Edit `remote`, `amountInEther` and comment `exit()`, and run the same script
 
-## Truffle
+## 3. Truffle
+
+#### 3.1 Description
+
 Truffle will compile, test, deploy your smart contract.
 In `/dapp` folder, there are few exemples of easy smart contract:
 - **MetaCoin**: default truffle contract you get when typing `truffle init`. It is a basic coin and you can `getBalance()` or `sendCoin()` token
 - **HelloWorld**: Just one function, display a single message when calling the function `greeter()`
-- **counter**: From 0, increment the counter each time you run `increment()`
+- **Counter**: From 0, increment the counter each time you run `increment()`, then see the result `getCount()`
 
 Each project has test functions (doing the same tests), in solidity `./test/*.sol` or in javascript `./test/*.js` 
 
-Go in truffle container:  `sudo docker exec -it truffle sh`
 
-Try truffle with **metaCoin**:
-- Go to metaCoin project: `cd /dapps/metaCoin`
+#### 3.2 Try truffle with MetaCoin:
+- Go in truffle container:  `sudo docker exec -it truffle sh`
+- Go to metaCoin project: `cd /dapps/MetaCoin`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
 - Test the contract against testrpc node: `truffle test --network testrpc`
 - Test against our devchain network: `truffle test --network devchain`
 - If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
 
-Now **test our helloWorld** dapp
+#### 3.3 Test our helloWorld dapp
 - Customize the output of the helloWorld: `migrations/2_deploy_contracts.js`, edit: `I am Groot!`
-- Navigate to the folder: `cd /dapp/helloWorld`
+- Navigate to the folder: `cd /dapp/HelloWorld`
 - Test against testrpc: `truffle test --network testrpc`
 - Test against devchain: `truffle test --network devchain`
 
-**Send** your helloWorld contract to devchain:
-- Go to project dir: `cd /dapp/helloWorld`
+#### 3.4 Send your helloWorld contract to devchain
+- Go to project dir: `cd /dapp/HelloWorld`
 - Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you shoud get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 
-**Interact with the contract** from the truffle console:
+#### 3.5 Interact with the contract from the truffle console:
 - Access the console: `truffle console --network devchain`
 - See last Greeter deployed: `Greeter.deployed()`
 - Greeter address: `Greeter.address`
@@ -85,22 +88,23 @@ Now **test our helloWorld** dapp
 - We can map our contract to an object: `var greeter = Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd')`
 - And simply call functions of this object: `greeter.greet()`
 
-**Share you contract with others**: for that you will need:
+#### 3.6 Share you contract with others
+For that you will need:
 - The **contract address**: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - The **abi**: a description of the functions of our contract 
   - From our VM: install jq: `sudo apt-get install jq`
-  - And display the abi: `cat dapp/helloWorld/build/contracts/Greeter.json | jq -c '.abi'`
+  - And display the abi: `cat dapp/HelloWorld/build/contracts/Greeter.json | jq -c '.abi'`
   - Result: `[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
   - Go to a truffle's friend pc, and interact with your contract:
   - Create the abi: `abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
   - You can now run your contract function to see your custom message: `web3.eth.contract(abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
 
-**New contract** from template:
+#### 3.7 New contract from template:
 - Launch a new contract (a clone) from the template Greeter: `var greeter2 = Greeter.new("Hello gva")`
 - Get the address: `greeter2`
 - Check the output: `Greeter.at('0x0a4c092ed54bcec766b4da5f641d396494a26638').greet()`
 
-Within truffle, you can **interact with your geth wallet**:
+#### 3.8 Within truffle, you can interact with your geth wallet:
 - See account0 balance: `web3.fromWei(web3.eth.getBalance(web3.personal.listAccounts[0]))`
 - Unlock your account: `web3.personal.unlockAccount(web3.personal.listAccounts[0], "17Fusion", 150000);`
 - Send some ether: `web3.eth.sendTransaction({from:web3.personal.listAccounts[0], to:'0x41df2990b4efd225f2bc12dd8b6455bf1c07ff6d', value: web3.toWei(10, "ether")})`
