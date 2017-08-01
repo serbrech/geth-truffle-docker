@@ -8,9 +8,9 @@ import json
 
 
 ### Parameters ##################
-web3            = Web3(RPCProvider(host='127.0.0.1', port='8540')) # Paritytest:8545, (gethtest:8543)
-remote         	= '0xf734e65a97c7e5ca5e5255d91f236751a6649d0b'  # our gethtest node: 0xf734e65a97c7e5ca5e5255d91f236751a6649d0b
+web3            = Web3(RPCProvider(host='127.0.0.1', port='8545')) # Paritytest:8545, (gethtest:8543)
 local           = web3.eth.accounts[0]   # use web3.eth.accounts[0] or one local addr: '0x...'
+remote         	= '0xf734e65a97c7e5ca5e5255d91f236751a6649d0b'  # our gethtest node: 0xf734e65a97c7e5ca5e5255d91f236751a6649d0b
 amountInEther   = 0.000111111
 gas             = 21000
 gasPrice        = 20000000000
@@ -35,6 +35,15 @@ print ('RemoteAddr = '+remote+'     balance = '+ str(web3.eth.getBalance(remote)
 
 exit()
 
+# SEND ETHER
+q= input ('\n--> Send tx of '+str(amountInEther)+' Ether from localAddr0:'+str(local)+' to remoteAddr:'+str(remote)+' on network '+network+' ? [y/N]')
+if q == 'Y' or q=='y':
+  tx = web3.eth.sendTransaction({'from':local, 'to':remote, 'value':hex(value), 'gas':hex(gas), 'gasPrice':hex(gasPrice)}) # <-- if need to resend a blocked tx (with more gaz) use: ",'nonce':hex(1048609)" <-- nonce number of the problematic tx
+  print(tx+'\n')
+  print(web3.eth.getTransaction(tx))
+
+exit()
+
 # LIST OF MY PENDING TX
 pblock = web3.eth.getBlock('pending', 'true')
 #print(json.dumps(pblock, sort_keys=True, indent=4))
@@ -46,9 +55,4 @@ for ptx in pblock['transactions']:
     print('--> PENDING TX FROM MY ADDRESS:'+ptx['from'])
     print(json.dumps(ptx, sort_keys=True, indent=4))
 
-# SEND ETHER
-q= input ('\n--> Send tx of '+str(amountInEther)+' Ether from localAddr0:'+str(local)+' to remoteAddr:'+str(remote)+' on network '+network+' ? [y/N]')
-if q == 'Y' or q=='y':
-  tx = web3.eth.sendTransaction({'from':local, 'to':remote, 'value':hex(value), 'gas':hex(gas), 'gasPrice':hex(gasPrice)}) # <-- if need to resend a blocked tx (with more gaz) use: ",'nonce':hex(1048609)" <-- nonce number of the problematic tx
-  print(tx+'\n')
-  print(web3.eth.getTransaction(tx))
+

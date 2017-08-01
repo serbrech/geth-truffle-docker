@@ -7,7 +7,7 @@ module.exports = {
     },
     devchain: {
       host: "geth",
-      port: 8540,
+      port: 8544,
       network_id: "2017042099"
     }
   }
