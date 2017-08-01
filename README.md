@@ -35,7 +35,7 @@ This compose will give you in on command line:
   - Create password: `echo "Geneva2017" > /root/.ethereum/devchain/pw2`
   - create account: `geth --datadir=/root/.ethereum/devchain account new --password /root/.ethereum/devchain/pw2`
 
-- Don't want to mine? In `docker-compose.yml` section `geth/command` remove `--fast --mine` and run again `docker-compose up -d`
+- Mining (y/n)? In `docker-compose.yml` section `geth/command` add/remove `--fast --mine` and run again `docker-compose up -d`
 
 - Check that you can see your node name on our netstat dashboard: http://factory.shinit.net:15000
 
@@ -46,24 +46,24 @@ This compose will give you in on command line:
 
 ## Truffle
 Go in truffle container:  `sudo docker exec -it truffle sh`
-Try truffle:
+Try truffle with **metaCoin**:
 - Go to metaCoin project: `cd /dapps/metaCoin`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
 - Test the contract against testrpc node: `truffle test --network testrpc`
 - Test against our devchain network: `truffle test --network devchain`
 - --> if warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
 
-Now test our helloWorld dapp
+Now **test our helloWorld** dapp
 - Customize the output of the helloWorld: `migrations/2_deploy_contracts.js`, edit: `I am Groot!`
 - Navigate to the folder: `cd /dapp/helloWorld`
 - Test against testrpc: `truffle test --network testrpc`
 - Test against devchain: `truffle test --network devchain`
 
-Send your helloWorld contract to devchain:
+**Send** your helloWorld contract to devchain:
 - Go to project dir: `cd /dapp/helloWorld`
 - Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you shoud get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 
-Interact with the contract from the truffle console:
+**Interact with the contract** from the truffle console:
 - Access the console: `truffle console --network devchain`
 - See last Greeter deployed: `Greeter.deployed()`
 - Greeter address: `Greeter.address`
@@ -71,25 +71,25 @@ Interact with the contract from the truffle console:
 - We can map our contract to an object: `var greeter = Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd')`
 - And simply call functions of this object: `greeter.greet()`
 
-Share you contract with others: for that you will need:
+**Share you contract with others**: for that you will need:
 - The **contract address**: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - The **abi**: a description of the functions of our contract 
   - From our VM: install jq: `àpt-get install jq`
   - And display the abi: `cat dapp/helloWorld/build/contracts/Greeter.json | jq -c '.abi'`
   - Result: `[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
+  - Go to a truffle's friend pc, and interact with your contract:
+  - Create the abi: `my_abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
+  - You can now run your contract function`to see your custom message: `web3.eth.contract(my_abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
 
-- Go to a truffle's friend pc, and interact with your contract:
-- Create the abi: `my_abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
-- You can now run your contract function`to see your custom message: `web3.eth.contract(my_abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
-
+**New contract** from template:
 - Launch a new contract (a clone) from the template Greeter: `var greeter2 = Greeter.new("Hello gva")`
 - Get the address: `greeter2`
 - Check the output: `Greeter.at('0x0a4c092ed54bcec766b4da5f641d396494a26638').greet()`
 
-- Without truffle, you can interact with your geth wallet:
-  - See account0 balance: `web3.fromWei(web3.eth.getBalance(web3.personal.listAccounts[0]))`
-  - Unlock your account: `web3.personal.unlockAccount(web3.personal.listAccounts[0], "17Fusion", 150000);`
-  - Send some ether: `web3.eth.sendTransaction({from:web3.personal.listAccounts[0], to:'0x41df2990b4efd225f2bc12dd8b6455bf1c07ff6d', value: web3.toWei(10, "ether")})`
+Within truffle, you can **interact with your geth wallet**:
+- See account0 balance: `web3.fromWei(web3.eth.getBalance(web3.personal.listAccounts[0]))`
+- Unlock your account: `web3.personal.unlockAccount(web3.personal.listAccounts[0], "17Fusion", 150000);`
+- Send some ether: `web3.eth.sendTransaction({from:web3.personal.listAccounts[0], to:'0x41df2990b4efd225f2bc12dd8b6455bf1c07ff6d', value: web3.toWei(10, "ether")})`
 
 
 ## Annexes
@@ -101,9 +101,7 @@ Share you contract with others: for that you will need:
 - Access the vm: `vagrant ssh`
 --> You are now in an ubuntu vm, you can continue the tuto!
 
-
 ### Docker
-
 Install docker:
 ```
 wget https://get.docker.com/ -O script.sh
@@ -115,9 +113,8 @@ check docker version: `sudo docker version`
 Docker commands:
 - List docker image: `sudo docker image list`
 - List docker container: `sudo docker container list`
-[Back to Prerequisit](#prerequisit)
 
-### docker-compose
+### Docker-compose
 Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
 ```
 sudo -i
@@ -126,4 +123,5 @@ chmod +x /usr/local/bin/docker-compose
 exit
 ```
 check docker-compose version `docker-compose version`
+
 [Back to Prerequisit](#prerequisit)
