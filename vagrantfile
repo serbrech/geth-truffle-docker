@@ -4,6 +4,7 @@
 $script = <<SCRIPT
 sudo apt-get -y update
 sudo apt-get -y upgrade
+sudo apt-get -y update
 sudo apt-get install -y net-tools nmap jq
 sudo apt-get install -y python3 python3-pip && pip3 install web3
 SCRIPT
