@@ -118,6 +118,7 @@ For that you will need:
 - Clone our repo and go at the root
 - Create vagrant vm: `vagrant up`, and wait the vm to build
 - Access the vm: `vagrant ssh`
+- Access the files: `cd /vagrant/`
 --> You are now in an ubuntu vm, you can continue the tuto!
 
 ### Docker
