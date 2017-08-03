@@ -18,17 +18,17 @@ This compose will give you in on command line:
 - A linux VM, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [Vagrant](#vagrant) --> see in annexes 
 - [Docker](#docker) v17 and [docker-compose](#docker-compose) v1.15 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
-- Create an environment var to declare your geth node name: `echo "export GETH_NODE=<YOUR_NODE_NAME>" >> ~/.profile && source /.profile`
+- Create an environment var to declare your geth node name: `echo "export GETH_NODE=<YOUR_NODE_NAME>" >> ~/.profile && source ~/.profile`
 - Check your node name: `echo $GETH_NODE`
 
 ## 1. Run containers
 
-- Run the stack: `sudo docker-compose up -d`
+- Run the stack: `docker-compose up -d`
 - Check geth is up and answering locally: `curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' localhost:8544`
 - Check testrpc node is running: `curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' localhost:8545`
 
 ## 2. Geth
-- Check container logs: `sudo docker logs -f geth`
+- Check container logs: `docker logs -f geth`
 - Start shell in the geth container: `sudo docker exec -it geth sh` 
 - Interact with geth:
   - List account: `geth --datadir=/root/.ethereum/devchain account list`
@@ -64,7 +64,7 @@ Each project has test functions (doing the same tests), in solidity `./test/*.so
 
 
 #### 3.2 Try truffle with MetaCoin:
-- Go in truffle container:  `sudo docker exec -it truffle sh`
+- Go in truffle container:  `docker exec -it truffle sh`
 - Go to metaCoin project: `cd /dapps/MetaCoin`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
 - Test the contract against testrpc node: `truffle test --network testrpc`
@@ -127,12 +127,13 @@ Install docker:
 wget https://get.docker.com/ -O script.sh
 chmod +x script.sh
 sudo ./script.sh
+sudo usermod -aG docker ${USER}
 ```
-check docker version: `sudo docker version`
+check docker version: `docker version`
 
 Docker commands:
-- List docker image: `sudo docker image list`
-- List docker container: `sudo docker container list`
+- List docker image: `docker image list`
+- List docker container: `docker container list`
 
 ### Docker-compose
 Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
