@@ -1,8 +1,5 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
-var Counter = artifacts.require("./Counter.sol");
+var Lottery = artifacts.require("./Lottery.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, Counter);
-  deployer.deploy(Counter);
+  deployer.deploy(Lottery);
 };

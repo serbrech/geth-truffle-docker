@@ -5,12 +5,13 @@ contract Lottery {
     mapping(address => uint) usersBet;
     mapping(uint => address) users;
     uint nbUsers = 0;
-    uint totalBets = 0;
- 
+    uint public totalBets = 0;
     address owner;
- 
+    string public gameName;
+
     function Lottery() {
         owner = msg.sender;
+        gameName = "$Lottery$ 1.0";
     }
     
     function Bet() public payable  {
@@ -24,6 +25,7 @@ contract Lottery {
         }
     }
     
+
     function EndLottery() public {
         if (msg.sender == owner) {
             uint sum = 0;
