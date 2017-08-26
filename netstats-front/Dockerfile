@@ -1,11 +1,14 @@
-FROM iojs
+FROM alpine:3.6
 
-RUN git clone https://github.com/cubedro/eth-netstats
-RUN cd /eth-netstats && npm install
-RUN cd /eth-netstats && npm install -g grunt-cli
-RUN cd /eth-netstats && grunt
+RUN apk add --no-cache git nodejs nodejs-npm 
+RUN npm install --silent -g grunt-cli
 
-WORKDIR /eth-netstats
+RUN git clone https://github.com/EthereumEx/eth-netstats.git /var/lib/eth-netstats
+
+WORKDIR /var/lib/eth-netstats
+RUN npm install
+RUN grunt all
 
 EXPOSE 3000
-CMD ["npm", "start"]
+ENTRYPOINT ["npm","start"]
+

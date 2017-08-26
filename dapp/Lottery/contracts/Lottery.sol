@@ -21,7 +21,8 @@ contract Lottery {
                 nbUsers += 1;
             }
             usersBet[msg.sender] += msg.value;
-            totalBets += msg.value;
+            totalBets += 1;
+            //msg.value;
         }
     }
     
