@@ -109,7 +109,7 @@ Each project has test functions in solidity `./test/*.sol` or in javascript `./t
 - If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
 
 #### 3.3 Send your helloWorld contract to devchain
-- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you shoud get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you should get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - Check your last deployment: `truffle network`
 
 #### 3.4 Interact with the contract from the truffle console:
