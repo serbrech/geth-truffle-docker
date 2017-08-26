@@ -36,7 +36,7 @@ This compose will give you in one command line:
 - Interact with geth:
   - List account: `geth --datadir=/root/.ethereum/devchain account list` (other commands [here](https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options))
   - To see your keys: `cat /root/.ethereum/devchain/keystore/*`
-  - Backup the account somewhere safe. For example, I saved this block for my wallet (carefull, you can steal my coins with these info):
+  - Backup the account somewhere safe. For example, I saved this block for my wallet (carefull, you can steal my coins with these infos):
 `{"address":"6e068b2fcf3ed73d5166d0b322fa10e784b7b4fe","crypto":{"cipher":"aes-128-ctr","ciphertext":"0d392da6deb66b13c95d1b723ea51a53ab58e1f7555c3a1263a5b203885b9e51","cipherparams":{"iv":"7a919e171cda132f375afd5f9e7c2ba1"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"1f3f814262b9a4ce3c2f3e1cabb5788f0520101f00598aa0b84bbda08ceaaf31"},"mac":"8e8393e86fe2278666ec26e9956b49adc25bc2e7492d5a25ee30e8118dd17441"},"id":"71aa2bfd-ee91-4206-ab5e-82c38ccd071f","version":3}/`
   - The account is on your host too, exit docker `exit` then type `sudo ls /var/lib/docker/volumes/devchain_geth/_data/devchain`. From this location you can save or import another account (just copy/paste your key file)
 
@@ -60,28 +60,35 @@ This compose will give you in one command line:
 Truffle will compile, test, deploy your smart contract.
 In `/dapp` folder, there are few exemples of easy smart contracts:
 
-- **HelloWorld**: display a single message when calling the function `greeter()`
+- **HelloWorld**: display a single message
   - Contract addr: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
-  - Function: `greeter()`
+  - Contract name: `Greeter`
+  - Function: `greeter()`: display the recorded message
+  - Ex: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greeter()`
   - Abi: `[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]`
 
 - **MetaCoin**: basic coin contract (default truffle contract you get when typing `truffle init`). Deployer's address gets 1000 coins
-  - Contract addr: ``
+  - Contract addr: `0x718c8c6348b268d62c617cbd175703bd10b4f8fa`
+  - Contract name: `MetaCoin`
   - Functions: 
-    - `getBalance(addr)`: display balance
-    - `sendCoin(addr1, amount, addr2)`: sent a coin
-    - Abi: ``
+    - `getBalance(addr)`: display balance in gwei
+    - `getBalanceInEth(addr): display balance in ether
+    - `sendCoin(addr, amount)`: sent coin to address
+  - Ex: `MetaCoin.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').getBalance('0x99b77b612d43ba830d9db1eda0d0d23600db6874')`
+  - Abi: `[{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"getBalanceInEth","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"receiver","type":"address"},{"name":"amount","type":"uint256"}],"name":"sendCoin","outputs":[{"name":"sufficient","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"getBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"}]`
 
 - **Counter**: from 0, increment a simple counter, and see the result 
-  - Contract addr: ``
+  - Contract addr: `0x44cd1f1fca0243f06f81238d039847855f3cf902`
+  - Contract name: `Counter`
   - Functions: 
-    - `increment()`: from 0, increment the counter each time you run
+    - `increment()`: increment the counter each time you run
     - `getCount()`: see the result
-  - Abi: ``
-
+  - Ex: `Counter.at('0x44cd1f1fca0243f06f81238d039847855f3cf902').getCount()`
+  - Abi: `[{"constant":true,"inputs":[],"name":"getCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"increment","outputs":[],"payable":false,"type":"function"}]`
+  
 Each project has test functions in solidity `./test/*.sol` or in javascript `./test/*.js` (doing the same tests)
 
-#### 3.2 Test our HelloWorld dapp
+#### 3.2 Test our HelloWorld dapp in truffle
 - Go in truffle container:  `docker exec -it truffle sh`
 - Go to HelloWorld project: `cd /dapps/HelloWorld`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
@@ -92,16 +99,17 @@ Each project has test functions in solidity `./test/*.sol` or in javascript `./t
 
 #### 3.3 Send your helloWorld contract to devchain
 - Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you shoud get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+- Check your last deployment: `truffle network`
 
 #### 3.4 Interact with the contract from the truffle console:
-- Access the console: `truffle console --network devchain`
+- Access the console: `truffle console --network devchain` <-- Need to be in the right dapp folder to interact with contract
 - See last Greeter contract deployed: `Greeter.deployed()` <-- Greeter is the declared name of the contract
 - Greeter address: `Greeter.address`
 - Run the `greet()` function (the main one) of our contract: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
-- We can map our contract to an object: `var greeter = Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd')`
-- And simply call functions of this object: `greeter.greet()`
+- We can map our contract to an object: `var contract = Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd')`
+- And simply call functions of this object: `contract.greet()`
 
-#### 3.5 Share you contract with others
+#### 3.5 Share your contract with others
 For that you will need:
 - The **contract address**: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - The **abi**: a description of the functions of our contract 
