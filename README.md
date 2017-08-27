@@ -4,17 +4,18 @@
 
 ## Description
 
-This compose will give you in one command line:
-- **ethereum go-client** (geth) running on port 8544 with
+This docker compose will give you in one command line:
+- [**Ethereum go-client (geth)**](https://github.com/ethereum/go-ethereum/wiki/geth) running on port 8544 with
   - A default account, already unlocked
   - Connected to Geneva devchain (network ID=2017042099)
   - Mining the blocks
   - Data are saved out of the container on your host in `/root/.ethereum`, so no problem if you delete the container
-- **Testrpc** eth-node running a test network on port 8545
-- **Truffle**: where you can test and deploy smart contracts
-- **Netstatsapi**: which will collect and send your node perf to our devchain dashboard on http://factory.shinit.net:15000
-- **Netstatsfront**: dashboard to display eth stats (not used by default, please uncomment in `docker-compose.yml` if needed and browse http://localhost:3000 )
+- [**Testrpc**](https://github.com/ethereumjs/testrpc): eth-node running a test network on port 8545
+- [**Truffle**](https://github.com/ConsenSys/truffle): where you can test and deploy smart contracts
+- [**Netstatsapi**](https://github.com/cubedro/eth-netstats): which will collect and send your node perf to our devchain dashboard on http://factory.shinit.net:15000
+- [**Netstatsfront**](https://github.com/cubedro/eth-netstats): dashboard to display eth stats (not used by default, please uncomment in `docker-compose.yml` if needed and browse http://localhost:3000 )
 
+More info: you can find an overview of that setup on my blog: https://greg.satoshi.tech/
 
 ## 0. Prerequisit
 - A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [Vagrant](#vagrant) --> see in annexes
