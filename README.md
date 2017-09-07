@@ -63,8 +63,9 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 
 #### 3.1 Description
 
-Truffle will compile, test, deploy your smart contract.
-In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
+Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
+
+ ![robot-small.png](https://github.com/gregbkr/geth-truffle-docker/raw/dev/media/robot-small.png)
 
 - **HelloWorld**: display a single message
   - Contract addr: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
