@@ -8,6 +8,8 @@ contract Lottery {
     uint public totalBets = 0;
     address owner;
     string public gameName;
+    uint randomNum;
+    uint public winningNumber;
 
     function Lottery() {
         owner = msg.sender;
@@ -26,11 +28,23 @@ contract Lottery {
         }
     }
     
+    function GetBetInEther(address addr) returns(uint){
+        return usersBet[addr];
+    }
 
-    function EndLottery() public {
+    function GetUserAddress(uint nb) returns(address){
+        return users[nb];
+    }
+
+    function testRandom() returns(uint) {
+        randomNum = uint(block.blockhash(block.number-1)) % totalBets;
+        return randomNum;
+    }
+
+    function EndLottery() public returns(uint) {
         if (msg.sender == owner) {
             uint sum = 0;
-            uint winningNumber = uint(block.blockhash(block.number-1)) % totalBets + 1;
+            winningNumber = uint(block.blockhash(block.number-1)) % totalBets;
             for (uint i=0; i < nbUsers; i++) {
                 sum += usersBet[users[i]];
                 if (sum >= winningNumber) {
