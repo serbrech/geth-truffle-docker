@@ -49,12 +49,15 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 
 - Mining (y/n)? In `docker-compose.yml` section `geth/command` add/remove `--fast --mine` and run again `docker-compose up -d`
 
-- Check that you can see your node name on our netstat dashboard: http://factory.shinit.net:15000
-
 - Use python to check your node, and later send ether: 
   - Install tools: `sudo apt-get install -y python3 python3-pip && pip3 install web3`
   - Check your node: `python3 scripts/checkWeb3.py`
   - Want to send ether? Edit `remote`, `amountInEther` and comment `exit()`, and run the same script
+
+- Check that you can see your node name on our netstats dashboard: http://factory.shinit.net:15000
+
+![netstats.png](https://github.com/gregbkr/geth-truffle-docker/raw/master/media/netstats.png)
+
 
 ## 3. Truffle
 
