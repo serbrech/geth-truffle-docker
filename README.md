@@ -192,18 +192,14 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 --> You are now in an ubuntu host, you can continue the tuto!
 
 ### Docker
-Install docker:
+- Install docker:
 ```
 wget https://get.docker.com/ -O script.sh
 chmod +x script.sh
 sudo ./script.sh
 sudo usermod -aG docker ${USER}
 ```
-check docker version: `docker version`
-
-Docker commands:
-- List docker image: `docker image list`
-- List docker container: `docker container list`
+- check docker version: `docker version`
 
 ### Docker-compose
 Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
