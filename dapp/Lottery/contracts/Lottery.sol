@@ -2,13 +2,13 @@ pragma solidity ^0.4.11;
  
 contract Lottery {
  
-    mapping(address => uint) usersBet;
-    mapping(uint => address) users;
-    uint nbUsers = 0;
+    mapping(address => uint) internal usersBet;
+    mapping(uint => address) internal users;
+    uint internal nbUsers = 0;
     uint public totalBets = 0;
-    address owner;
+    address internal owner;
     string public gameName;
-    uint randomNum;
+    uint internal randomNum;
     uint public winningNumber;
 
     function Lottery() {

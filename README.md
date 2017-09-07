@@ -61,13 +61,13 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 #### 3.1 Description
 
 Truffle will compile, test, deploy your smart contract.
-In `/dapp` folder, there are few exemples of easy smart contracts:
+In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
 
 - **HelloWorld**: display a single message
   - Contract addr: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
   - Contract name: `Greeter`
   - Function: `greet()`: display the recorded message
-  - Ex: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
+  - Command: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
   - Abi:
 ```
 [{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
@@ -80,7 +80,7 @@ In `/dapp` folder, there are few exemples of easy smart contracts:
     - `getBalance(addr)`: display balance in gwei
     - `getBalanceInEth(addr)`: display balance in ether
     - `sendCoin(addr, amount)`: sent coin to address
-  - Ex: `MetaCoin.at('0x718c8c6348b268d62c617cbd175703bd10b4f8fa').getBalance('0x99b77b612d43ba830d9db1eda0d0d23600db6874')`
+  - Command: `MetaCoin.at('0x718c8c6348b268d62c617cbd175703bd10b4f8fa').getBalance('0x99b77b612d43ba830d9db1eda0d0d23600db6874')`
   - Abi:
 ```
  [{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"getBalanceInEth","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"receiver","type":"address"},{"name":"amount","type":"uint256"}],"name":"sendCoin","outputs":[{"name":"sufficient","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"getBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"}]
@@ -92,7 +92,7 @@ In `/dapp` folder, there are few exemples of easy smart contracts:
   - Functions: 
     - `increment()`: increment the counter each time you run
     - `getCount()`: see the result
-  - Ex: `Counter.at('0x44cd1f1fca0243f06f81238d039847855f3cf902').getCount()`
+  - Command: `Counter.at('0x44cd1f1fca0243f06f81238d039847855f3cf902').getCount()`
   - Abi: 
 ```
 [{"constant":true,"inputs":[],"name":"getCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"increment","outputs":[],"payable":false,"type":"function"}]
@@ -109,8 +109,8 @@ Each project has test functions in solidity `./test/*.sol` or in javascript `./t
 - Test against our devchain network: `truffle test --network devchain`
 - If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
 
-#### 3.3 Send your helloWorld contract to devchain
-- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you should get the contract number: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+#### 3.3 Send your HelloWorld contract to devchain
+- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you should get the contract address: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
 - Check your last deployment: `truffle network`
 
 #### 3.4 Interact with the contract from the truffle console:
@@ -141,7 +141,7 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 #### 3.6 New contract from template:
 - Launch a new contract (a clone) from the template Greeter known locally by truffle: `var greeter2 = Greeter.new("Hello gva")`
 - Get the address: `greeter2`
-- Check the output: `Greeter.at('0x0a4c092ed54bcec766b4da5f641d396494a26638').greet()`
+- Check the output of this new address: `Greeter.at('0x0a4c092ed54bcec766b4da5f641d396494a26638').greet()`
 
 #### 3.7 Within truffle console, you can interact with your wallet:
 - List accounts: `web3.eth.accounts`
@@ -150,15 +150,18 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 - Send some ether: `web3.eth.sendTransaction({from:web3.personal.accounts[0], to:'0x41df2990b4efd225f2bc12dd8b6455bf1c07ff6d', value: web3.toWei(10, "ether")})`
 - Send some ether between local account: `web3.eth.sendTransaction({from:web3.eth.accounts[0], to:web3.eth.accounts[1], value: web3.toWei(10, "ether") })`
 
-#### 3.8 Exploring Lottery contract in more depth
+#### 3.8 More in-deph exploration of the Lottery contract
 
 - **Lottery**: Bet some ether, and get a winner
-  - Contract addr: Please deploy your own contract as it gets destroy when lottery finishes
+  - Contract addr: `Please deploy your own contract as it gets destroy when lottery finishes`
   - Contract name: `Lottery`
   - Functions: 
     - `bet()`: Send some ether with the transaction, in order to bet
-    - `endLottery()`: only the contract owner can stop the lottery which reveal the winner (game is just an example as it is really unfair)
-  - Ex:
+    - `GetBetInEther(address)`: return how much an address bet
+    - `GetUserAddress(int)`: return the address of the first/second better in the internal table/database
+    - `testRandom()`: return the random number used in the lottery
+    - `endLottery()`: only the contract owner can stop the lottery which should reveal the winner (game is just an example as it is really unfair)
+  - Commands:
     - Deploy contract and truffle console to it
     - Create object lot: `lot=Lottery.at('your_contract_address')`
     - Return a simple var of the game: `lot.gameName()`
