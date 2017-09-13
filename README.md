@@ -63,8 +63,9 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 
 #### 3.1 Description
 
-Truffle will compile, test, deploy your smart contract.
-In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
+Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
+
+ ![robot-small.png](https://github.com/gregbkr/geth-truffle-docker/raw/dev/media/robot-small.png)
 
 - **HelloWorld**: display a single message
   - Contract addr: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
@@ -163,7 +164,7 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
     - `GetBetInEther(address)`: return how much an address bet
     - `GetUserAddress(int)`: return the address of the first/second better in the internal table/database
     - `testRandom()`: return the random number used in the lottery
-    - `endLottery()`: only the contract owner can stop the lottery which should reveal the winner (game is just an example as it is really unfair)
+    - `endLottery()`: only the contract owner can stop the lottery which should reveal the winner (game is just an example as it is not really fair)
   - Commands:
     - Deploy contract and truffle console to it
     - Create object lot: `lot=Lottery.at('your_contract_address')`
@@ -176,7 +177,7 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
     - Check bet of account0(bob): `lot.GetBetInEther.call(web3.eth.accounts[0]).then( bet => console.log( web3.fromWei(bet.toNumber(),'ether') ))`
     - Check address of first account: `lot.GetUserAddress.call('0').then( users => console.log( users ))`
     - Test the random number: `lot.test.call().then( num => console.log( num.toNumber() ))`
-    - End the lottery (carefull here, contract's functions are disabled on this last step): `lot.EndLottery({ from:web3.eth.accounts[0] }).then( winningNumber => console.log (winningNumber) )` --> Got an issue here returning the wining number
+    - End the lottery (carefull here, contract's functions will be disabled after this last step): `lot.EndLottery({ from:web3.eth.accounts[0] }).then( winningNumber => console.log (winningNumber) )` --> Got an issue here returning the wining number
 
 
 ## Annexes
@@ -191,18 +192,14 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 --> You are now in an ubuntu host, you can continue the tuto!
 
 ### Docker
-Install docker:
+- Install docker:
 ```
 wget https://get.docker.com/ -O script.sh
 chmod +x script.sh
 sudo ./script.sh
 sudo usermod -aG docker ${USER}
 ```
-check docker version: `docker version`
-
-Docker commands:
-- List docker image: `docker image list`
-- List docker container: `docker container list`
+- check docker version: `docker version`
 
 ### Docker-compose
 Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
