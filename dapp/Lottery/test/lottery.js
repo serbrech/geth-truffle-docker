@@ -104,10 +104,8 @@ contract('Lottery', function(accounts) {
       }); 
   });
 
-  it("will random number", function() {
-
-      return contract.testRandom.call().then( randomNum => {
-          //var bet_bob = web3.fromWei(bet.toNumber(),'ether');
+  it("will test random number", function() {
+      return contract.testRandom.call().then( randomNum => { 
           console.log("A random number is [0 or 1] :" + randomNum);
       }); 
   });
