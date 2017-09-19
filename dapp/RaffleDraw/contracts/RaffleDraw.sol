@@ -2,16 +2,8 @@ pragma solidity ^0.4.11;
  
 contract RaffleDraw {
  
-    //mapping(address => uint) internal usersBet;
-    mapping(uint => string) public users;
-    uint public nbUsers = 0;
-
-    mapping(uint => string) public prizes;
-    uint public nbPrizes = 0;
-    
-    mapping(string => bool) internal usersDrawed;
-    mapping(string => bool) internal prizesDrawed;
-    uint public nbDraw = 0;
+    string[] public users;
+    string[] public prizes;
 
     address internal owner;
     string public gameName;
@@ -24,56 +16,51 @@ contract RaffleDraw {
     }
     
     function AddUser(string user) public onlyByAdmin() {
-        users[nbUsers] = user;
-        nbUsers += 1;
+        users.push(user);
     } 
+    
+    function RemoveUser(uint index) public onlyByAdmin() {
+        delete users[index];
+        users[index]=users[users.length-1];
+        users.length --;
+    }
+
+    function NbUsers() returns(uint) {
+        return users.length;
+    }
 
     function AddPrize(string prize) public onlyByAdmin() {
-        prizes[nbPrizes] = prize;
-        nbPrizes += 1;
+        prizes.push(prize);
     } 
 
-    function testRandom() returns(uint) {
-        uint randomNum = uint(block.blockhash(block.number-1)) % nbUsers;
-        return randomNum;
+    function RemovePrize(uint index) public onlyByAdmin() {
+        delete prizes[index];
+        prizes[index]=prizes[prizes.length-1];
+        prizes.length --;
+    }
+
+    function NbPrizes() returns(uint) {
+        return prizes.length;
+    }
+
+    function TestRandom() returns(uint) {
+        uint random = uint(block.blockhash(block.number-1)) % users.length;
+        return random;
     }
 
     function DrawUser() returns(string) {
-    
-        uint i = 0;
-        uint randomUser = uint(block.blockhash(block.number-1)) % nbUsers;
-        var winner = users[randomUser];
-    
-        for (var i = 0; i < nbUsers; i++) {
-
-            randomUser = uint(block.blockhash(block.number-1)) % nbUsers;
-            while (usersDrawed[winner] == true) {
-            
-        
-
-
-            winner = users[randomUser];
-            //if (i >= nbDraw) { "stop"}
-            i++;
-        }
-        usersDrawed[winner] == true
-        return (winner);
+        uint random = uint(block.blockhash(block.number-1)) % users.length;
+        var winner = users[random];
+        RemoveUser(random);
+        return winner;
     }
 
-    // function DrawPrize() returns(string) {
-
-    //     uint randomPrize = uint(block.blockhash(block.number-1)) % nbPrizes;
-    //     var prize = prizes[randomPrize];
-        
-    //     return (prize);
-    // }
-
-    function ConfirmDraw(string prize, string user) {
-        usersDrawed[user] = true;
-        prizesDrawed[prize] = true;
-        nbDraw += 1;
+    function DrawPrize() returns(string) {
+        uint random = uint(block.blockhash(block.number-1)) % prizes.length;
+        var prize = prizes[random];
+        RemovePrize(random);
+        return prize;
     }
-
 
     modifier onlyByAdmin() {
         require(msg.sender == owner);

@@ -40,29 +40,54 @@ contract('RaffleDraw', function(accounts) {
       contract.users(1).then ( user => { assert.equal(user, "Bart", "Bob should be able to add users") }); 
   });
 
-  it("will check alice(not admin) can't add prizes", function() {
-       contract.AddPrize("1 Ethereum", {from:alice}).catch ( error => { assert.equal(error.message, "VM Exception while processing transaction: invalid opcode", "Alice should not be able to add prices") }); 
-  });
-
   it("will check Bob(admin) can add prizes", function() {
       contract.AddPrize("1 Bitcoin", {from:bob});
       contract.AddPrize("2 Ethereum", {from:bob});
-      contract.AddPrize("3 Dash", {from:bob});
-      contract.AddPrize("4 OmiseGo", {from:bob});  
-      contract.prizes(3).then ( user => { assert.equal(user, "4 OmiseGo", "Bob should be able to add prizes") }); 
+      //contract.AddUser("Carl", {from:bob});
+      //contract.AddUser("Dom", {from:bob});  
+      contract.prizes(1).then ( user => { assert.equal(user, "2 Ethereum", "Bob should be able to add prizes") }); 
   });
 
-  // it("will test random number", function() {
-  //     return contract.testRandom.call().then( randomNum => { console.log("A random number is [0 to 4] :" + randomNum) }); 
+  it("will list users and prizes", function() {
+      contract.NbUsers.call().then( nbUsers => { console.log("NbUsers:"+ nbUsers) });
+      contract.users.call(0).then( user => { console.log("- User[0]:"+ user) });
+      contract.users.call(1).then( user => { console.log("- User[1]:"+ user) });
+      contract.NbPrizes.call().then( nbPrizes => { console.log("NbPrize:"+ nbPrizes) });
+      contract.prizes.call(0).then( prize => { console.log("- Prize[0]:"+ prize) });
+      return contract.prizes.call(1).then( prize => { console.log("- Prize[1]:"+ prize) });
+  });
+
+  // it("will remove user Anne", function() {
+  //     contract.RemoveUser(0);
+  //     contract.users.call(0).then( user => { console.log("User[0]:"+ user) });
+  //     return contract.NbUsers.call().then( nbUsers => { console.log("NbUsers:"+ nbUsers) });
   // });
 
-  it("will draw a winner", function() {
-      return contract.DrawUser.call().then( user => { console.log(" => Winner: " + user) }); 
+  it("will test random number", function() {
+      return contract.TestRandom.call().then( random => { console.log("A random number is [0 to 1] :" + random) }); 
   });
 
-  it("will draw another winner", function() {
-      return contract.DrawUser.call().then( user => { console.log(" => 2nd Winner: " + user) }); 
+  it("will draw a winner and check only 1 user left", function() {
+      contract.DrawUser(); // WHY CAN'T I JUST GET IN RETURN THE USER?
+      contract.DrawUser.call().then( user => { console.log("=> winner: " + user) });  
+      contract.NbUsers.call().then( nbUsers => { console.log("NbUsers remaining:"+ nbUsers) });
+      return contract.NbUsers.call().then( nbUsers => { assert.equal(nbUsers, 1, "Only 1 user should remains") }); 
+      // HOW TO DO AN assert.contains(...)?
+      //return contract.users.call(1).catch ( error => { assert.contains(error.message, "Error: VM Exception while executing eth_call: invalid opcode", "The winning user should be deleted") }); 
+      //return contract.users.call(1).catch ( error => { console.log(error.message) }); 
   });
+
+  it("will draw a prize and check only 1 prize left", function() {
+      contract.DrawPrize();
+      contract.DrawPrize.call().then( prize => { console.log("=> prize: " + prize) });  
+      contract.NbPrizes.call().then( nbPrizes => { console.log("NbPrizes remaining:"+ nbPrizes) });
+      return contract.NbPrizes.call().then( nbPrizes => { assert.equal(nbPrizes, 1, "Only 1 prize should remains") }); 
+  });
+
+
+
+
+
 
 
 
@@ -78,17 +103,11 @@ contract('RaffleDraw', function(accounts) {
   //     });
   // });
 
-  // it("will list users", function() {
-  //     return contract.nbUsers().then ( nbUsers => { 
-  //         console.log("Number of Users :" + nbUsers);
-  //         var nb = nbUsers;
-  //         for (var i = 0; i < nb; i++) {
-  //             contract.users(i).then( user => { console.log(user) });
-  //         };
-  //         return contract.gameName();
-  //     });
-  // });
-
 
 
 });
+
+
+// how to remove use from string or mapping?
+// how to list a whole string / mapping without loop?
+// how to delete a string name, without knowing the index ?
