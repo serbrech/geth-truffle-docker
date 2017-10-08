@@ -48,11 +48,26 @@ contract RaffleDraw {
         return random;
     }
 
-    function DrawUser() returns(string) {
+    function DrawUser() returns(string)  {
         uint random = uint(block.blockhash(block.number-1)) % users.length;
         var winner = users[random];
         RemoveUser(random);
         return winner;
+    }
+
+    // function DrawUserWhileAddingAnother(string user) returns(string) {
+    //     winner = DrawUser();
+    //     AddUser(user);
+    //     return winner;
+    // }
+
+    // If winner don't want the prize, we draw another winner and add previous one in the pool
+    function ReDrawUser(string user) returns(string) {
+        uint random = uint(block.blockhash(block.number-1)) % users.length;
+        var newwinner = users[random];
+        RemoveUser(random);
+        AddUser(user); // re-add previous drawed user
+        return newwinner;
     }
 
     function DrawPrize() returns(string) {

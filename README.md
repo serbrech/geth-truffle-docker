@@ -8,8 +8,8 @@ This docker compose will give you in one command line:
 - [**Ethereum go-client (geth)**](https://github.com/ethereum/go-ethereum/wiki/geth) running on port 8544 with
   - 2 ethereum accounts, already unlocked
   - Connected to Geneva devchain (network ID=2017042099)
-  - Mining the blocks
-  - Data are saved out of the container on your host in `/root/.ethereum`, so no problem if you delete the container
+  - Mining the blocks (optional)
+  - Data are saved out of the container, on your host, so no problem if you delete the container
 - [**Testrpc**](https://github.com/ethereumjs/testrpc): eth-node running a test network on port 8545
 - [**Truffle**](https://github.com/ConsenSys/truffle): where you can test and deploy smart contracts
 - [**Netstatsapi**](https://github.com/cubedro/eth-netstats): which will collect and send your node perf to our devchain dashboard on http://factory.shinit.net:15000
@@ -18,8 +18,8 @@ This docker compose will give you in one command line:
 More info: you can find an overview of that setup on my blog: https://greg.satoshi.tech/
 
 ## 0. Prerequisit
-- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [Vagrant](#vagrant) --> see in annexes
-- [Docker](#docker) v17 and [docker-compose](#docker-compose) v1.15 
+- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use docker toolbox or [Vagrant](#vagrant) --> see in annexes
+- [Docker](#docker) v17+ and [docker-compose](#docker-compose) v1.15+ 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 - Create an environment var to declare your geth node name: `echo "export GETH_NODE=<YOUR_NODE_NAME>" >> ~/.profile && source ~/.profile`
 - Check your node name: `echo $GETH_NODE`
@@ -32,25 +32,29 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 - Other rpc commands [here](https://github.com/ethereum/wiki/wiki/JSON-RPC#json-rpc-methods)
 
 ## 2. Geth
-- Check container logs: `docker logs -f geth`
+- Check container logs: `docker logs geth`
 - Start shell in the geth container: `sudo docker exec -it geth sh` 
 - Interact with geth:
-  - List account: `geth --datadir=/root/.ethereum/devchain account list` (other commands [here](https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options))
+  - List account: `geth --datadir=/root/.ethereum/devchain account list` (other geth commands [here](https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options))
   - To see your keys: `cat /root/.ethereum/devchain/keystore/*`
   - Backup the account somewhere safe. For example, I saved this block for my wallet (carefull, you can steal my coins with these infos):
 ```
 {"address":"6e068b2fcf3ed73d5166d0b322fa10e784b7b4fe","crypto":{"cipher":"aes-128-ctr","ciphertext":"0d392da6deb66b13c95d1b723ea51a53ab58e1f7555c3a1263a5b203885b9e51","cipherparams":{"iv":"7a919e171cda132f375afd5f9e7c2ba1"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"1f3f814262b9a4ce3c2f3e1cabb5788f0520101f00598aa0b84bbda08ceaaf31"},"mac":"8e8393e86fe2278666ec26e9956b49adc25bc2e7492d5a25ee30e8118dd17441"},"id":"71aa2bfd-ee91-4206-ab5e-82c38ccd071f","version":3}/
 ```
-  - The account is on your host too, exit docker `exit` then type `sudo ls /var/lib/docker/volumes/devchain_geth/_data/devchain`. From this location you can save or import another account (just copy/paste your key file)
+  - The account is on your host too:
+    - Exit docker `exit`
+    - List docker volume: `docker volume ls`
+    - See the physical location of your account: `docker volume inspect devchain_geth`
+    - You can then browse the mount point `sudo ls /var/lib/docker/volumes/devchain_geth/_data/devchain`. From this location you can save or import another account (just copy/paste your key file)
 
-- If needed, (within the geth container) create new account with:
+- If needed, (**within** the geth container) create new account with:
   - Create password: `echo "Geneva2017" > /root/.ethereum/devchain/pw2`
   - create account: `geth --datadir=/root/.ethereum/devchain account new --password /root/.ethereum/devchain/pw2`
 
-- Mining (y/n)? In `docker-compose.yml` section `geth/command` add/remove `--fast --mine` and run again `docker-compose up -d`
+- Mining (y/n)? In `docker-compose.yml` section `geth/command` add/remove `--fast --mine` to the line `command` and run again `docker-compose up -d`
 
 - Use python to check your node, and later send ether: 
-  - Install tools: `sudo apt-get install -y python3 python3-pip && pip3 install web3`
+  - Install python requirements: `sudo apt-get install -y python3 python3-pip && pip3 install web3`
   - Check your node: `python3 scripts/checkWeb3.py`
   - Want to send ether? Edit `remote`, `amountInEther` and comment `exit()`, and run the same script
 
@@ -182,8 +186,14 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 
 ## Annexes
 
+### Docker toolbox
+
+- Toolbox will create in the backgroud a linux virtual machine (with virtualbox), and gives you an invite so you can run docker commands.
+- Install [Docker toolbox](https://docs.docker.com/toolbox/overview/#whats-in-the-box) for all version of windows.
+- Then do this tuto only within the docker invite command line.
+
 ### Vagrant
-- Install Git for windows or similar command line that you can git. 
+- Install [Git](https://git-for-windows.github.io/) for windows or git for MAC
 - Install the latest version of [vagrant](https://www.vagrantup.com/downloads.html) and [virtualbox](https://www.virtualbox.org/wiki/Downloads)
 - Clone our repo and go at the root
 - Create vagrant vm: `vagrant up`, and wait the vm to build
@@ -191,7 +201,7 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 - Access the files: `cd /vagrant/`
 --> You are now in an ubuntu host, you can continue the tuto!
 
-### Docker
+### Docker install on a linux box
 - Install docker:
 ```
 wget https://get.docker.com/ -O script.sh
@@ -201,7 +211,7 @@ sudo usermod -aG docker ${USER}
 ```
 - check docker version: `docker version`
 
-### Docker-compose
+### Docker-compose install on a linux box
 Replace 1.15.0 with latest version available on https://github.com/docker/compose/releases 
 ```
 sudo -i
