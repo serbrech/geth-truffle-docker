@@ -189,8 +189,9 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 ### Docker toolbox
 
 - Toolbox will create in the backgroud a linux virtual machine (with virtualbox), and gives you an invite so you can run docker commands.
-- Install [Docker toolbox](https://docs.docker.com/toolbox/overview/#whats-in-the-box) for all version of windows.
-- Then do this tuto only within the docker invite command line.
+- Install [Docker toolbox](https://docs.docker.com/toolbox/overview/#whats-in-the-box) for windows or MAC.
+- Check docker and compose version: `docker version` `docker-compose version`
+- For windows, we will need to run all commands from the **Docker QuickStart shortcut** (troubleshooting guide [here](https://docs.docker.com/toolbox/toolbox_install_windows/#step-3-verify-your-installation) )
 
 ### Vagrant
 - Install [Git](https://git-for-windows.github.io/) for windows or git for MAC
