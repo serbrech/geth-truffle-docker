@@ -18,7 +18,7 @@ This docker compose will give you in one command line:
 More info: you can find an overview of that setup on my blog: https://greg.satoshi.tech/
 
 ## 0. Prerequisit
-- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use docker toolbox or [Vagrant](#vagrant) --> see in annexes
+- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [docker toolbox](#docker-toolbox) or [Vagrant](#vagrant) --> see in annexes
 - [Docker](#docker) v17+ and [docker-compose](#docker-compose) v1.15+ 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 - Create an environment var to declare your geth node name: `echo "export GETH_NODE=<YOUR_NODE_NAME>" >> ~/.profile && source ~/.profile`
