@@ -41,23 +41,75 @@ contract('RaffleDraw', function(accounts) {
   });
 
   it("will check Bob(admin) can add prizes", function() {
-      contract.AddPrize("1 Bitcoin", {from:bob});
-      contract.AddPrize("2 Ethereum", {from:bob});
-      return contract.prizes(1).then ( prize => { assert.equal(prize, "2 Ethereum", "Bob should be able to add prizes") }); 
+      contract.AddPrize("OneBitcoin", {from:bob});
+      contract.AddPrize("TwoEthereum", {from:bob});
+      return contract.prizes(1).then ( prize => { assert.equal(prize, "TwoEthereum", "Bob should be able to add prizes") }); 
   });
 
   it("will list names and prizes", function() {
-      contract.NbUsers.call().then( nbUsers => { console.log("NbUsers:"+ nbUsers); 
+      contract.NbUsers.call().then( nbUsers => { console.log("NbUsers:"+ nbUsers) });
+      console.log("User,prize,drawn,accepted");
       contract.users.call(0).then( user => { console.log("- User[0]:"+ user) });
       contract.users.call(1).then( user => { console.log("- User[1]:"+ user) });
       contract.users.call(2).then( user => { console.log("- User[2]:"+ user) });
       contract.NbPrizes.call().then( nbPrizes => { console.log("NbPrizes:"+ nbPrizes) });
       contract.prizes.call(0).then( prize => { console.log("- Prize[0]:"+ prize) });
       return contract.prizes.call(1).then( prize => { console.log("- Prize[1]:"+ prize) });
-
-      });
-
   });
+
+  it("will test random number as an event", function() {
+      contract.TestRandom().then( tx => {
+  
+          var event = contract.TestRandomEvent({fromBlock: 0, toBlock: 'latest'});
+          event.watch(function(error, result){
+              if (!error)
+                  var r = result[0];
+                  console.log(result.args.random.valueOf());
+                  console.log(result.args.returnValue);
+                  event.stopWatching();
+          });
+      }); 
+  });
+
+  // it("will draw winner and price, redraw again for another name, and accept prize ", function() {
+  //     return contract.Draw().then( tx => {
+  //         return contract.Draw.call().then( winner => { console.log("--> Winner(indexU,indexP,user,price) : "+ winner); 
+  //             return contract.ReDrawUser(winner[0],winner[1]).then( tx => {
+  //                 return contract.ReDrawUser.call(winner[0],winner[1]).then( newwinner => { console.log("--> New winner instead:"+ newwinner);
+  //                     return contract.AcceptDraw(newwinner[0],winner[1]).then( tx => {
+  //                         return contract.NbPrizes.call().then( nbPrizes => { 
+  //                             console.log("NbPrize left:"+ nbPrizes);
+  //                             contract.users.call(newwinner[0]).then( user => { console.log("- Check winner :"+ user) });
+  //                             contract.users.call(0).then( user => { console.log("- User[0] :"+ user) });
+  //                             contract.users.call(1).then( user => { console.log("- User[1] :"+ user) });
+  //                             return contract.users.call(2).then( user => { console.log("- User[2] :"+ user) }); 
+
+  //                         });
+  //                     });
+  //                 });
+  //             });
+  //         });
+  //     });
+  // });
+
+
+
+  // it("will draw price and winner ", function() {
+  //     return contract.Draw.call().then( winner => { console.log("--> Winner (index+desc) : "+ winner) });
+  // });
+
+  // it("will redraw Anne for the prize of One Bitcoin", function() {
+  //     return contract.ReDrawUser.call(0,0).then( winner => { console.log("--> New winner instead of Anne[0]:"+ winner) });
+  // });
+
+
+  // it("will accept winner (Anne) and price (OneBitcoin)", function() {
+  //     return contract.AcceptDraw(0,0).then( tx => {
+  //         contract.users.call(0).then( user => { console.log("- User[0]:"+ user) });
+  //         return contract.NbPrizes.call().then( nbPrizes => { console.log("NbPrizes:"+ nbPrizes) });
+  //     });
+  // });
+
 });
 
 
