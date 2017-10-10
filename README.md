@@ -18,7 +18,7 @@ This docker compose will give you in one command line:
 More info: you can find an overview of that setup on my blog: https://greg.satoshi.tech/
 
 ## 0. Prerequisit
-- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use docker toolbox or [Vagrant](#vagrant) --> see in annexes
+- A linux host, preferable ubuntu 14.x or 16.x. If you are on windows or MAC, please use [docker toolbox](#docker-toolbox) or [Vagrant](#vagrant) --> see in annexes
 - [Docker](#docker) v17+ and [docker-compose](#docker-compose) v1.15+ 
 - This code: `git clone https://github.com/gregbkr/geth-truffle-docker.git devchain && cd devchain`
 - Create an environment var to declare your geth node name: `echo "export GETH_NODE=<YOUR_NODE_NAME>" >> ~/.profile && source ~/.profile`
@@ -67,7 +67,7 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 
 #### 3.1 Description
 
-Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there are few exemples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
+Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there are few examples of easy smart contracts. The addresses below are on the geneva devchain, feel free to play with it!
 
  ![robot-small.png](https://github.com/gregbkr/geth-truffle-docker/raw/dev/media/robot-small.png)
 
@@ -189,8 +189,9 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 ### Docker toolbox
 
 - Toolbox will create in the backgroud a linux virtual machine (with virtualbox), and gives you an invite so you can run docker commands.
-- Install [Docker toolbox](https://docs.docker.com/toolbox/overview/#whats-in-the-box) for all version of windows.
-- Then do this tuto only within the docker invite command line.
+- Install [Docker toolbox](https://docs.docker.com/toolbox/overview/#whats-in-the-box) for windows or MAC.
+- Check docker and compose version: `docker version` `docker-compose version`
+- For windows, we will need to run all commands from the **Docker QuickStart shortcut** (troubleshooting guide [here](https://docs.docker.com/toolbox/toolbox_install_windows/#step-3-verify-your-installation) )
 
 ### Vagrant
 - Install [Git](https://git-for-windows.github.io/) for windows or git for MAC
