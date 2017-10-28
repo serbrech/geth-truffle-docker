@@ -18,7 +18,7 @@ contract RaffleDraw {
 
     function RaffleDraw() {
         owner = msg.sender;
-        gameName = "RaffleDraw 1.0";
+        gameName = "RaffleDraw 1.1";
     }
     
     function AddUser(string name) onlyByAdmin() {
@@ -94,10 +94,10 @@ contract RaffleDraw {
 
     function AcceptDraw(uint indexU, uint indexP) onlyByAdmin() returns(bool) {
         
-        // require(users.length > 0); // need at least 1 user to accept draw
-        // require(indexP < prizes.length && prizes.length > 0); // a prize should exist and inside the array range
-        // require(users[indexU].drawn == true); // user need to have been drawn to be able to be accepted
-        // require( sha3(users[indexU].prize) == sha3(prizes[indexP]) ); // User to accept should have been drawn with the related prize -> sha3: can only compare int/bool in require()
+        require(users.length > 0); // need at least 1 user to accept draw
+        require(indexP < prizes.length && prizes.length > 0); // a prize should exist and inside the array range
+        require(users[indexU].drawn == true); // user need to have been drawn to be able to be accepted
+        require( sha3(users[indexU].prize) == sha3(prizes[indexP]) ); // User to accept should have been drawn with the related prize -> sha3: can only compare int/bool in require()
 
         var prize = prizes[indexP];
         //users[indexU].prize = prizes[indexP];

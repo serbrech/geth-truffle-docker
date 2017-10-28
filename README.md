@@ -186,6 +186,10 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 
 ## Annexes
 
+### Update images
+
+To update Geth and truffle to the latest docker image, please rebuild the docker image, if a new image is present in dockerhub, it will get downloaded: `docker-compose up -d --build`
+
 ### Docker toolbox
 
 - Toolbox will create in the backgroud a linux virtual machine (with virtualbox), and gives you an invite so you can run docker commands.

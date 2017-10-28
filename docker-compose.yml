@@ -27,6 +27,7 @@ services:
     image: desmart/testrpc:latest
     ports:
       - 8545:8545
+    command: '--debug --account="0xaa73b5c98e60d589e71ce7cff59c02f82e12c7ce676ee356da8e058a285ccd61,12345678901234567891234567890123456789123" --account="0x52f3a1fa15405e1d5a68d7774ca45c7a3c7373a66c3c44db94a7f99a22c14d28,12345678901234567891234567890123456789123"'
 
   netstatsapi: # Collect geth data and send them to remote dashboard (netstatsfront)
     container_name: netstatsapi
