@@ -35,6 +35,13 @@ print ('RemoteAddr = '+remote+'     balance = '+ str(web3.eth.getBalance(remote)
 
 exit()
 
+# unlock accounts
+print ('Unlocking account...')
+web3.personal.unlockAccount(web3.eth.accounts[0], "17Fusion")
+
+
+exit()
+
 # SEND ETHER
 q= input ('\n--> Send tx of '+str(amountInEther)+' Ether from localAddr0:'+str(local)+' to remoteAddr:'+str(remote)+' on network '+network+' ? [y/N]')
 if q == 'Y' or q=='y':

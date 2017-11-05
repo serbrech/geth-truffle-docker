@@ -33,7 +33,7 @@ More info: you can find an overview of that setup on my blog: https://greg.satos
 
 ## 2. Geth
 - Check container logs: `docker logs geth`
-- Start shell in the geth container: `sudo docker exec -it geth sh` 
+- Start shell in the geth container: `docker exec -it geth sh` 
 - Interact with geth:
   - List account: `geth --datadir=/root/.ethereum/devchain account list` (other geth commands [here](https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options))
   - To see your keys: `cat /root/.ethereum/devchain/keystore/*`
@@ -71,14 +71,20 @@ Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there
 
  ![robot-small.png](https://github.com/gregbkr/geth-truffle-docker/raw/dev/media/robot-small.png)
 
+Definition of contracts running on devchain:
+
 - **HelloWorld**: display a single message
-  - Contract addr: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+  - Contract addr: `0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55`
   - Contract name: `Greeter`
-  - Function: `greet()`: display the recorded message
-  - Command: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
+  - Functions: 
+    - `Greet()`: display the recorded message
+    - `SetGreet()`: record a new message
+  - Commands: 
+    - `Greeter.at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55').Greet()`
+    - `Greeter.at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55').SetGreet("My new message!")`
   - Abi:
 ```
-[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
+[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"SetGreet","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
 ```
 
 - **MetaCoin**: basic coin contract (default truffle contract you get when typing `truffle init`). Deployer's address gets 1000 coins
@@ -106,50 +112,53 @@ Truffle will compile, test, deploy your smart contract. In `/dapp` folder, there
 [{"constant":true,"inputs":[],"name":"getCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"increment","outputs":[],"payable":false,"type":"function"}]
 ```
 
-Each project has test functions in solidity `./test/*.sol` or in javascript `./test/*.js` (doing the same tests)
+As there are less test examples of test in solidity, I choose to create only  javascript test. These files `./test/*.js` will help you debug and strongly test your contract before to send it to production.
 
 #### 3.2 Test our HelloWorld dapp in truffle
 - Go in truffle container:  `docker exec -it truffle sh`
 - Go to HelloWorld project: `cd /dapps/HelloWorld`
 - Check configuration: `cat truffle.js` <-- it should map with `geth:8544` and `testrpc:8545`
-- Customize the output of the HelloWorld: `vi migrations/2_deploy_contracts.js`, edit: `I am Groot!`
+- Check which value our contract will get at deployment : `cat migrations/2_deploy_contracts.js`, see: `I am Groot!`
 - Test the contract against testrpc node: `truffle test --network testrpc`
-- Test against our devchain network: `truffle test --network devchain`
-- If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet!
+- If warning message: `authentication needed: password or unlock` --> you need to unlock your wallet (should be unlock when starting geth normally)
+  - `truffle console --network devchain`
+  - `web3.personal.unlockAccount(web3.personal.listAccounts[0], "17Fusion", 150000);`
+  - Exit with `Crtl+D`
 
-#### 3.3 Send your HelloWorld contract to devchain
-- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you should get the contract address: `Greeter: 0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+#### 3.3 Send your HelloWorld contract devchain
+While you can test and migrate your contract to testrpc, this environment only lives within your laptop. Next step is to deploy it to the devchain, so others will be able to access it.
+- Send/migrate contract to devchain: `truffle migrate --network devchain` <-- you should get the contract address: `Greeter: 0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55` (add `--reset` if you want to redeploy an updated contract version)
 - Check your last deployment: `truffle network`
 
 #### 3.4 Interact with the contract from the truffle console:
 - Access the console: `truffle console --network devchain` <-- Need to be in the right dapp folder to interact with contract
 - See last Greeter contract deployed: `Greeter.deployed()` <-- Greeter is the declared name of the contract
 - Greeter address: `Greeter.address`
-- Run the `greet()` function (the main one) of our contract: `Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
-- We can map our contract to an object: `var contract = Greeter.at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd')`
-- And simply call functions of this object: `contract.greet()`
+- Run the `Greet()` function (the main one) of our contract: `Greeter.at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55').Greet()`
+- We can map our contract to an object: `var contract = Greeter.at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55')`
+- And simply call functions of this object: `contract.Greet()`
 
 #### 3.5 Share your contract with others
 For that you will need:
-- The **contract address**: `0xbbe920b156febdb475d5139c8d86201b5a84b2fd`
+- The **contract address**: `0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55`
 - The **abi**: a description of the functions of our contract 
   - From our host: install jq: `sudo apt-get install jq`
   - And display the abi: `cat dapp/HelloWorld/build/contracts/Greeter.json | jq -c '.abi'`
   - Result: 
 ```
-[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
+[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"SetGreet","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
 ```
   - Go to a truffle's friend pc (or delete truffle container on your host `docker stop truffle; docker rm truffle` and start a new one `docker-compose up -d`), and interact with your contract:
   - Create the abi: 
 ```
-abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
+abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"SetGreet","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}]
 ```
-  - You can now run your contract function to see your custom message: `web3.eth.contract(abi).at('0xbbe920b156febdb475d5139c8d86201b5a84b2fd').greet()`
+  - You can now run your contract function to see your custom message: `web3.eth.contract(abi).at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55').Greet()`
 
 #### 3.6 New contract from template:
 - Launch a new contract (a clone) from the template Greeter known locally by truffle: `var greeter2 = Greeter.new("Hello gva")`
 - Get the address: `greeter2`
-- Check the output of this new address: `Greeter.at('0x0a4c092ed54bcec766b4da5f641d396494a26638').greet()`
+- Check the output of this new address: `Greeter.at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55').Greet()`
 
 #### 3.7 Within truffle console, you can interact with your wallet:
 - List accounts: `web3.eth.accounts`
@@ -182,6 +191,19 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
     - Check address of first account: `lot.GetUserAddress.call('0').then( users => console.log( users ))`
     - Test the random number: `lot.test.call().then( num => console.log( num.toNumber() ))`
     - End the lottery (carefull here, contract's functions will be disabled after this last step): `lot.EndLottery({ from:web3.eth.accounts[0] }).then( winningNumber => console.log (winningNumber) )` --> Got an issue here returning the wining number
+
+## 4. Front
+
+## 4.1 Simple html page
+We will talk to our contract on devchain via a simple html page.
+- Html page is located here: `./front/helloworld.html`
+- Make sure it target the right ethereum node: `HttpProvider("http://localhost:8544"))` for devchain
+- The script section of the page need the web3 library `<script src="./web3.min.js"></script>` that you can obtain via:
+  - this file locate in `./front/web3.min.js`
+  - Or from `ethereum/web3.js` github: `wget https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js`
+  - Or node install: `cd ./front`, `npm init`, `npm install web3 --save`, `npm install ethereum/web3.js --save` then browse `ls ./node_modules/web3/dist/web3.min.js`
+- Variable `abi` and `contract` should reference your contract abi and address
+- Open then the page `./front/helloworld.html` with your favorite browser.
 
 
 ## Annexes
@@ -225,4 +247,11 @@ chmod +x /usr/local/bin/docker-compose
 exit
 ```
 check docker-compose version `docker-compose version`
+
+
+## FRONT UI
+
+cd dapp/HelloWorld
+npm install web3 --save
+npm install ethereum/web3.js --save
 

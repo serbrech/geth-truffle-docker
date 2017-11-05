@@ -1,0 +1,73 @@
+<!doctype html>
+<htmp lang="en">
+    <head>
+        <title>Helloworld dapp</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
+        <script src="./web3.min.js"></script>
+    </head>
+    <body>
+
+        <div class="header">
+            <h3>HelloWorld dapp</h3>
+        </div>
+        <div class="jumbotron">
+            <button id="button_check">Start watching greeter variable</button>
+            <input id="input" type="test">
+            <button id="button_set">Set new value for greeter</button>
+            
+            <blockquote id="output"></blockquote>
+            <i id="block"></i>
+        </div>
+
+    	<script>
+    		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8544")); // devchain:8544, testrpc:8545
+    		console.log(web3);
+
+            // Need default account, (unlocked and with fund) to send later any tx
+    		web3.eth.defaultAccount = web3.eth.accounts[0];
+            var balance = web3.eth.getBalance(web3.eth.defaultAccount);
+            console.log("Coinbase= " + web3.eth.defaultAccount + " | Balance= " + balance.toString(10) );
+
+    		var abi = [{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"SetGreet","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}];
+
+    		var contract = web3.eth.contract(abi).at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55'); //devchain
+            //var contract = contractAbi.at('0x89f2d123fc6e37a9f120aab9340ecd247fdc27a3'); // testrpc 
+            console.log(contract);
+
+    		var input = document.getElementById('input');
+			var button_check = document.getElementById('button_check');
+            var button_set = document.getElementById('button_set');
+			var output = document.getElementById('output');
+            var block = document.getElementById('block');
+
+
+            // Start watching greeter value
+            button_check.addEventListener('click', function(){
+                output.innerHTML = "Start watching greeter variable...";
+
+                filter = web3.eth.filter('latest');
+                filter.watch(function() {
+                    block.innerHTML = 'Just mined block #' + web3.eth.getBlock('latest', true).number;
+                    output.innerHTML = "Result: greeter=" + contract.Greet();
+                });
+            });
+
+            // Register a new value
+            button_set.addEventListener('click', function(){
+                
+                // contract.deployed()
+                //     .then( instance => { instance.SetGreet(input.value); output.innerHTML = "Wait..."; return instance; })
+                //     .then( instance => { return instance.Greet(); })
+                //     .then( value => { 
+                //          output.innerHTML = value;
+                //     });
+
+                contract.SetGreet(input.value);
+                output.innerHTML = "Sending transaction and waiting result...";
+            });
+
+    	</script>
+
+    </body>
+</html>

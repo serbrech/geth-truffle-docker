@@ -8,6 +8,6 @@ contract TestGreeter {
 
   function testGreetMessageWithNew() {
     Greeter greeter = Greeter(DeployedAddresses.Greeter());
-    greeter.greet();
+    greeter.Greet();
   }
 }

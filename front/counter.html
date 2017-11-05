@@ -1,0 +1,66 @@
+<!doctype html>
+<htmp lang="en">
+    <head>
+        <title>counter dapp</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
+        <script src="./web3.min.js"></script>
+    </head>
+    <body>
+
+        <div class="header">
+            <h3>Counter dapp</h3>
+        </div>
+        <div class="jumbotron">
+            <button id="button_check">Start watching counter variable</button>
+            <button id="button_set">Increment +1</button>
+
+            <blockquote id="output"></blockquote    >
+            <!--input id="input" type="test"-->
+            <i id="block"></i>
+        </div>
+
+    	<script>
+    		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8544")); // devchain:8544, testrpc:8545
+    		console.log(web3);
+
+            // Need default account, (unlocked and with fund) to send later any tx
+    		web3.eth.defaultAccount = web3.eth.accounts[0];
+            var balance = web3.eth.getBalance(web3.eth.defaultAccount);
+            console.log("Coinbase= " + web3.eth.defaultAccount + " | Balance= " + balance.toString(10) );
+
+    		var abi = [{"constant":true,"inputs":[],"name":"getCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"increment","outputs":[],"payable":false,"type":"function"}];
+
+    		var contract = web3.eth.contract(abi).at('0x44cd1f1fca0243f06f81238d039847855f3cf902'); //devchain
+            //var contract = contractAbi.at(''); // testrpc 
+            console.log(contract);
+
+    		//var input = document.getElementById('input');
+			var button_check = document.getElementById('button_check');
+            var button_set = document.getElementById('button_set');
+			var output = document.getElementById('output');
+            var block = document.getElementById('block');
+            
+            // Start watching counter value
+            button_check.addEventListener('click', function(){
+                output.innerHTML = "Start watching counter variable...";
+
+                filter = web3.eth.filter('latest');
+                filter.watch(function() {
+                    block.innerHTML = 'Just mined block #' + web3.eth.getBlock('latest', true).number;
+                    output.innerHTML = "Result: counter=" + contract.getCount();
+                });
+            });
+
+            // Register a new value
+            button_set.addEventListener('click', function(){
+                
+                contract.increment();
+                output.innerHTML = "Sending transaction to increment +1...";
+
+            });
+
+    	</script>
+
+    </body>
+</html>

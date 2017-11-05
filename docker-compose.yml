@@ -2,10 +2,20 @@ version: '3'
 
 services:
 
+  # node:
+  #   build: node
+  #   command: node app.js
+  #   volumes:
+  #     - dapp:/myapp
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     PORT: 3000
+
   geth:
     container_name: geth
     build: geth
-    command: '--identity ${GETH_NODE} --networkid 2017042099 --datadir "/root/.ethereum/devchain" --unlock 0 --password /root/.ethereum/devchain/pw --unlock 1 --password /root/.ethereum/devchain/pw --port "30303" --rpc --rpcport "8544" --rpccorsdomain "*" --rpcaddr="0.0.0.0" --rpcapi "admin,db,eth,miner,net,web3,personal,txpool" --nodiscover --minerthreads=2  --etherbase 0'
+    command: '--identity ${GETH_NODE} --networkid 2017042099 --datadir "/root/.ethereum/devchain" --unlock 0,1 --password /root/.ethereum/devchain/pw --port "30303" --rpc --rpcport "8544" --rpccorsdomain "*" --rpcaddr="0.0.0.0" --rpcapi "admin,db,eth,miner,net,web3,personal,txpool" --nodiscover --minerthreads=2  --etherbase 0'
     # --fast --mine'
     ports:    
       - "8544:8544"
@@ -19,6 +29,9 @@ services:
     build: truffle
     volumes:
       - ./dapp:/dapp
+    ports:
+      - "8080:8080"
+      - "7000:8545"
     entrypoint: sh
     command: '-c "sleep 1d"'
 
@@ -26,7 +39,7 @@ services:
     container_name: testrpc
     image: desmart/testrpc:latest
     ports:
-      - 8545:8545
+      - "8545:8545"
     command: '--debug --account="0xaa73b5c98e60d589e71ce7cff59c02f82e12c7ce676ee356da8e058a285ccd61,12345678901234567891234567890123456789123" --account="0x52f3a1fa15405e1d5a68d7774ca45c7a3c7373a66c3c44db94a7f99a22c14d28,12345678901234567891234567890123456789123"'
 
   netstatsapi: # Collect geth data and send them to remote dashboard (netstatsfront)

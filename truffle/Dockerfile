@@ -7,4 +7,5 @@ RUN apk add -t .gyp --no-cache git python g++ make \
 RUN mkdir -p /dapp
 WORKDIR /dapp
 
+EXPOSE 8080
 ENTRYPOINT []
