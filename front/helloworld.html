@@ -4,7 +4,7 @@
         <title>Helloworld dapp</title>
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
-        <script src="./web3.min.js"></script>
+        <script type="text/javascript" src="https://rawgit.com/ethereum/web3.js/develop/dist/web3.min.js"></script>
     </head>
     <body>
 
@@ -21,7 +21,7 @@
         </div>
 
     	<script>
-    		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8544")); // devchain:8544, testrpc:8545
+    		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")); // devchain:8544, testrpc:8545
     		console.log(web3);
 
             // Need default account, (unlocked and with fund) to send later any tx
@@ -31,8 +31,8 @@
 
     		var abi = [{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Greet","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"SetGreet","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_greeting","type":"string"}],"payable":false,"type":"constructor"}];
 
-    		var contract = web3.eth.contract(abi).at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55'); //devchain
-            //var contract = contractAbi.at('0x89f2d123fc6e37a9f120aab9340ecd247fdc27a3'); // testrpc 
+    		//var contract = web3.eth.contract(abi).at('0x5c57d316f698ff2dc3e2bf1b5f2117e8b88b4c55'); //devchain
+            var contract = web3.eth.contract(abi).at('0xa6ecbaeee2c080ca824e628571a5ba89e1afaeda'); // testrpc 
             console.log(contract);
 
     		var input = document.getElementById('input');
@@ -49,7 +49,7 @@
                 filter = web3.eth.filter('latest');
                 filter.watch(function() {
                     block.innerHTML = 'Just mined block #' + web3.eth.getBlock('latest', true).number;
-                    output.innerHTML = "Result: greeter=" + contract.Greet();
+                    if ( contract.Greet() ) { output.innerHTML = "Result: greeter=" + contract.Greet() }
                 });
             });
 

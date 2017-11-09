@@ -198,9 +198,9 @@ abi=[{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"t
 We will talk to our contract on devchain via a simple html page.
 - Html page is located here: `./front/helloworld.html`
 - Make sure it target the right ethereum node: `HttpProvider("http://localhost:8544"))` for devchain
-- The script section of the page need the web3 library `<script src="./web3.min.js"></script>` that you can obtain via:
-  - this file locate in `./front/web3.min.js`
-  - Or from `ethereum/web3.js` github: `wget https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js`
+- The script section of the page need the web3 library `web3.min.js` that you can obtain via:
+  - Online mapping: `<script type="text/javascript" src="https://rawgit.com/ethereum/web3.js/develop/dist/web3.min.js">`
+  - Or from `ethereum/web3.js` github: `wget https://github.com/ethereum/web3.js/blob/develop/dist/web3.min.js` and link it with `<script src="./web3.min.js"></script>` 
   - Or node install: `cd ./front`, `npm init`, `npm install web3 --save`, `npm install ethereum/web3.js --save` then browse `ls ./node_modules/web3/dist/web3.min.js`
 - Variable `abi` and `contract` should reference your contract abi and address
 - Open then the page `./front/helloworld.html` with your favorite browser.
@@ -247,11 +247,4 @@ chmod +x /usr/local/bin/docker-compose
 exit
 ```
 check docker-compose version `docker-compose version`
-
-
-## FRONT UI
-
-cd dapp/HelloWorld
-npm install web3 --save
-npm install ethereum/web3.js --save
 

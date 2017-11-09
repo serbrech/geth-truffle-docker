@@ -1,0 +1,135 @@
+<!doctype html>
+<htmp lang="en">
+    <head>
+        <title>RaffleDraw dapp</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
+        <script type="text/javascript" src="https://rawgit.com/ethereum/web3.js/develop/dist/web3.min.js"></script>
+    </head>
+    <body>
+
+        <div class="header">
+            <h3>RaffleDraw dapp</h3>
+        </div>
+        <div class="jumbotron">
+            <!--button id="button_check">Start watching Raffle variables</button-->
+            <input id="input_user" type="test" value="Devops199">
+            <button id="button_new_user">Register new user</button>
+            <input id="input_prize" type="test" value="Nine polkadots">
+            <button id="button_new_prize">register new prize</button>
+
+            <blockquote id="output_user"></blockquote>
+            <blockquote id="output_prize"></blockquote>
+            <blockquote id="output_event"></blockquote>
+            <i id="block"></i><br /><br />
+
+            <button id="button_draw">Draw User&Prize !</button>
+            <input id="input_redraw" type="test" value="0,0">
+            <button id="button_redraw">ReDraw User [user_index],[prize_index]</button><br /><br />
+            <input id="input_accept" type="test" value="0,0">
+            <button id="button_accept">Accept [user_index],[prize_index]</button>
+        </div>
+
+    	<script>
+    		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")) // devchain:8544, testrpc:8545
+    		console.log(web3)
+
+            // Need default account, (unlocked and with fund) to send later any tx
+    		web3.eth.defaultAccount = web3.eth.accounts[0]
+            var balance = web3.eth.getBalance(web3.eth.defaultAccount)
+            console.log("Coinbase= " + web3.eth.defaultAccount + " | Balance= " + balance.toString(10) )
+
+    		var abi = [{"constant":false,"inputs":[{"name":"prize","type":"string"}],"name":"AddPrize","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"users","outputs":[{"name":"name","type":"string"},{"name":"prize","type":"string"},{"name":"drawn","type":"bool"},{"name":"accepted","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"NbUsers","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"gameName","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"indexU","type":"uint256"},{"name":"indexP","type":"uint256"}],"name":"AcceptDraw","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"index","type":"uint256"}],"name":"RemovePrize","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"}],"name":"AddUser","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"Draw","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"NbPrizes","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"indexU","type":"uint256"},{"name":"indexP","type":"uint256"}],"name":"ReDrawUser","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"prizes","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"randomU","type":"uint256"},{"indexed":false,"name":"randomP","type":"uint256"},{"indexed":false,"name":"winner","type":"string"},{"indexed":false,"name":"prize","type":"string"}],"name":"DrawEvent","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newRandomU","type":"uint256"},{"indexed":false,"name":"newWinner","type":"string"}],"name":"ReDrawUserEvent","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"winner","type":"string"},{"indexed":false,"name":"prize","type":"string"}],"name":"AcceptDrawEvent","type":"event"}]
+
+    		//var contract = web3.eth.contract(abi).at(''); //devchain
+            var contract = web3.eth.contract(abi).at('0x53b8f71e99c14ddd77658068f6401110365ef976') // testrpc 
+            console.log(contract)
+
+    		var input_user = document.getElementById('input_user')
+            var input_prize = document.getElementById('input_prize')
+			var button_check = document.getElementById('button_check')
+            var button_new_user = document.getElementById('button_new_user')
+            var button_new_prize = document.getElementById('button_new_prize')
+			var output_user = document.getElementById('output_user')
+            var output_prize = document.getElementById('output_prize')
+            var output_event = document.getElementById('output_event')
+            var block = document.getElementById('block')
+            var button_draw = document.getElementById('button_draw')
+            var input_redraw = document.getElementById('input_redraw')
+            var button_redraw = document.getElementById('button_redraw')
+            var input_accept = document.getElementById('input_accept')
+            var button_accept = document.getElementById('button_accept')
+
+            // Watch contract values
+            filter = web3.eth.filter('latest')
+            filter.watch(function() {
+                block.innerHTML = 'Just mined block #' + web3.eth.getBlock('latest', true).number
+                
+                // Display users
+                if (contract.NbUsers().toNumber() > 0) {
+                    output_user.innerHTML = "<b>Users</b>: <i>[index] User,Prize,Drawn,Accepted</i>"
+                    for(i = 0; i < contract.NbUsers(); i++){
+                        output_user.innerHTML += "<br /> ["+i+"] "+ contract.users(i)
+                    }
+                }
+                // Display prizes
+                if (contract.NbPrizes().toNumber() > 0) {
+                    output_prize.innerHTML = "<b>Prizes</b>: "
+                    for(i = 0; i < contract.NbPrizes(); i++){
+                        output_prize.innerHTML += "<br /> ["+i+"] "+ contract.prizes(i)
+                    }
+                }
+            })
+
+            
+            // Watch contract events
+            output_event.innerHTML = "<b>Events</b>: <br />"
+            
+            contract.DrawEvent().watch(function(error, result){
+              if (!error)
+                output_event.innerHTML += "Draw -> " + result.args.randomU + "," + result.args.randomP + "," + result.args.winner + "," +  result.args.prize + "<br />"
+            });
+
+            contract.ReDrawUserEvent().watch(function(error, result){
+              if (!error)
+                output_event.innerHTML += "ReDraw -> " + result.args.newRandomU + "," +  result.args.newWinner + "<br />"
+            });
+
+            // Register a new user
+            button_new_user.addEventListener('click', function(){               
+                contract.AddUser(input_user.value)
+                output_user.innerHTML = "Sending tx & waiting result..."
+            })
+
+            // Register a new prize
+            button_new_prize.addEventListener('click', function(){               
+                contract.AddPrize(input_prize.value)
+                output_user.innerHTML = "Sending tx & waiting result..."
+            })
+
+            // Draw user & prize
+            button_draw.addEventListener('click', function(){               
+                contract.Draw()
+                output_user.innerHTML = "Sending tx & waiting result..."
+            })
+
+            // ReDraw User(&prize)
+            button_redraw.addEventListener('click', function(){               
+                indexU = input_redraw.value.split(',')[0]
+                indexP = input_redraw.value.split(',')[1]
+                contract.ReDrawUser(indexU,indexP)
+                output_user.innerHTML = "Sending tx & waiting result..."
+            })
+
+            // Accept user & prize: example of input: 0,1 for user[0] and prize[1]
+            button_accept.addEventListener('click', function(){
+                indexU = input_accept.value.split(',')[0]
+                indexP = input_accept.value.split(',')[1]
+                contract.AcceptDraw(indexU,indexP)
+                output_user.innerHTML = "Sending tx & waiting result..."
+            })
+
+    	</script>
+
+    </body>
+</html>
